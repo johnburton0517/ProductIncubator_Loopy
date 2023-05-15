@@ -24,7 +24,7 @@ function Label(model, config){
 	});
 
 	// Draw
-	var _circleRadius = 0;
+	var _circleRadius = 0; // TODO: not used, remove?
 	self.draw = function(ctx){
 
 		// Retina
