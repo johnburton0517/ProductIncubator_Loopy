@@ -1,27 +1,31 @@
-window.Mouse = {};
-Mouse.init = function(target){
+window.Mouse = {}; 
+Mouse.init = function(target){ // target is the canvas 
 
 	// Events!
+	// Mouse pressed down
 	const _onmousedown = function(){
 		Mouse.moved = false;
 		Mouse.pressed = true;
 		Mouse.startedOnTarget = true;
 		publish("mousedown");
 	};
+	// Mouse scroll wheel
 	const _onmousewheel = function(event){
 		publish("mousewheel",[event]);
 	};
+	// Mouse moving on canvas
 	const _onmousemove = function(event){
 
 		const m = mouseToMouse(event.x,event.y,loopy.offsetScale,loopy.offsetX,loopy.offsetY);
 		// Mouse!
 		Mouse.x = m.x;
 		Mouse.y = m.y;
-
+		
 		Mouse.moved = true;
 		publish("mousemove");
 
 	};
+	// Mouse let up after being pressed down
 	const _onmouseup = function(){
 		Mouse.pressed = false;
 		if(Mouse.startedOnTarget){
@@ -36,6 +40,7 @@ Mouse.init = function(target){
 	_addMouseEvents(target, _onmousedown, _onmousemove, _onmouseup,_onmousewheel);
 
 	// Cursor & Update
+	// Example: when in play mode and hovering over a node
 	Mouse.target = target;
 	Mouse.showCursor = function(cursor){
 		Mouse.target.style.cursor = cursor;
@@ -45,6 +50,7 @@ Mouse.init = function(target){
 	};
 
 };
+// Used to calculate mouse movement on canvas based on loopy scale and offsets
 function mouseToMouse(mx,my,scale,offsetX,offsetY){
 	// DO THE INVERSE
 	const canvasses = document.getElementById("canvasses");
