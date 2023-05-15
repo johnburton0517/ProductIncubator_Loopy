@@ -15,12 +15,13 @@ Label.COLORS = {
 Label.FONTSIZE = 40;
 Label._CLASS_ = "Label";
 
+// Label class constructor
 function Label(model, config){
 
 	const self = this;
 	self._CLASS_ = "Label";
 
-	// Mah Parents!
+	// References to parent objects
 	self.loopy = model.loopy;
 	self.model = model;
 	self.config = config;
@@ -33,7 +34,7 @@ function Label(model, config){
 	injectedDefaultProps(defaultProperties,objTypeToTypeIndex("label"));
 	_configureProperties(self, config, defaultProperties);
 
-	// Draw
+	// Draw method for rendering the label on the canvas context
 	self.draw = function(ctx){
 
 		if(self.visibility===1 && self.loopy.mode===Loopy.MODE_PLAY) return;
@@ -133,8 +134,9 @@ function Label(model, config){
 		};
 
 	};
+	// Event handler for mouse clicks
 	subscribe("mouseclick",function(){
-
+		// Check if we're in play mode
 		if(self.loopy.mode!==Loopy.MODE_PLAY) return;
 		if(!self.href) return;
 
@@ -145,10 +147,12 @@ function Label(model, config){
 		}
 	});
 
+	// Helper method for checking if a point is in the label
 	self.isPointInLabel = function(x, y){
 		return _isPointInBox(x,y, self.getBounds());
 	};
 
+	// Helper method for getting the bounding box of the label
 	self.getBoundingBox = function(){
 		const bounds = self.getBounds();
 		return {
