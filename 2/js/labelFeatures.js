@@ -1,7 +1,9 @@
-
-// Label features
+//This file regards everything to do with altering labels in Loopy
+//This and the line below set x and y coordinates that scale depending on canvas size or user screensize
 injectProperty("label", "x",{persist:{index:0,binFunc:factoryRatioForXY(),serializeFunc:v=>Math.round(v)}});
 injectProperty("label", "y",{persist:{index:1,binFunc:factoryRatioForXY(),serializeFunc:v=>Math.round(v)}});
+/*The text color of a label lasts across multiple iterations of opening the webpage due to "persist"
+  Note that clearing you cache may lose saved changes!*/
 injectProperty("label", "textColor",{
     defaultValue:-1,
     persist:4,
@@ -12,6 +14,7 @@ injectProperty("label", "textColor",{
         advanced: true
     }
 });
+//Sets whether a label is always visible or only in edit mode
 injectProperty("label", "visibility",{
     defaultValue:0,
     persist:3,
@@ -19,9 +22,11 @@ injectProperty("label", "visibility",{
         index: 2,
         options: [0,1],
         labelFunc: (v)=>`Show : ${v===1?'only in edit mode':'always'}`,
+        //Advanced properties are hidden in the sidebar by default!
         advanced: true
     }
 });
+//Sets properties for text a user inputs to be on a label
 injectProperty("label", "text",{
     defaultValue:"...",
     immutableDefault:true,
@@ -35,8 +40,12 @@ injectProperty("label", "text",{
         textarea:true
     }
 });
+/*Allow the user to include a hyperlink in their label
+By default the hyperlink option is blank until a user indicates otherwise*/
 injectProperty("label", "href",{
     defaultValue:"",
+    /*Immutable properties always initialize blank, so users have to add them (in this case, a
+      hyperlink) after the object has already been created*/
     immutableDefault:true,
     persist:{
         index:5,
