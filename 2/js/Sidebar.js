@@ -9,6 +9,7 @@ function Sidebar(loopy){
 	const self = this;
 	PageUI.call(self, document.getElementById("sidebar"));
 
+	// Create and configure the sidebar switch button
 	const sideBarSwitch = document.createElement("div");
 	sideBarSwitch.id = "sidebarSwitch";
 	sideBarSwitch.innerHTML = '❯';
@@ -32,7 +33,7 @@ function Sidebar(loopy){
 	}
 	self.dom.parentNode.appendChild(sideBarSwitch);
 
-	// Edit
+	// Edit method to show the page for editing a particular object
 	self.edit = function(object){
 		self.showPage(object._CLASS_);
 		self.currentPage.edit(object);
@@ -49,7 +50,7 @@ function Sidebar(loopy){
 	// ACTUAL PAGES ////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////
 
-	// LoopyNode!
+	// LoopyNode page
 	(function(){
 		const page = new SidebarPage();
 		backToTopButton(self, page);
@@ -60,7 +61,7 @@ function Sidebar(loopy){
 		self.addPage("Node", page);
 	})();
 
-	// Edge!
+	// Edge page
 	(function(){
 		const page = new SidebarPage();
 		backToTopButton(self, page);
@@ -71,7 +72,7 @@ function Sidebar(loopy){
 		self.addPage("Edge", page);
 	})();
 
-	// Label!
+	// Label page
 	(function(){
 		const page = new SidebarPage();
 		backToTopButton(self, page);
@@ -94,10 +95,10 @@ function Sidebar(loopy){
 		self.addPage("Label", page);
 	})();
 
-	// Edit
+	// Edit page
 	(function(){
 		const page = new SidebarPage();
-		page.target = loopy;
+		page.target = loopy; // Set the target of the page to the loopy object
 		injectPropsInSideBar(page,objTypeToTypeIndex("loopy"));
 		page.onedit = ()=>injectPropsLabelInSideBar(page,objTypeToTypeIndex("loopy"));
 		self.addPage("Edit", page);
@@ -105,12 +106,13 @@ function Sidebar(loopy){
 
 	// Ctrl-S to SAVE
 	subscribe("key/save",function(){
-		if(Key.control){ // Ctrl-S or ⌘-S
+		if(Key.control){ // Ctrl-S or ⌘-S -> check if Ctrl or ⌘ is pressed
 			publish("modal",["save_link"]);
 		}
 	});
 
 }
+
 function backToTopButton(sidebar, page){
 	page.addComponent(new ComponentButton({
 		header: true,
@@ -120,6 +122,7 @@ function backToTopButton(sidebar, page){
 		}
 	}));
 }
+
 function deleteMeButton(sidebar, page, label){
 	page.addComponent(new ComponentButton({
 		label: label,
