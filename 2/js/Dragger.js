@@ -1,11 +1,13 @@
 /**********************************
 
 DRAGGER
-//I'm so tired
 **********************************/
 
+/*This function lets user move on-screen objects while in Edit (MOVE) mode or move the screen
+itself around in Play mode*/
 function Dragger(loopy){
 
+	//Identifies Loopy as app
 	const self = this;
 	self.loopy = loopy;
 
@@ -14,6 +16,7 @@ function Dragger(loopy){
 	self.offsetX = 0;
 	self.offsetY = 0;
 
+	//Checks if you're in play mode and moves screen around instead of objects
 	subscribe("mousedown",function(){
 		if(self.loopy.mode===Loopy.MODE_PLAY && loopy.cameraMode===2) {
 			self.dragging = {_CLASS_:"Scene"};
@@ -60,6 +63,8 @@ function Dragger(loopy){
 		self.offsetY = Mouse.y;
 
 	});
+
+	//Drags and moves the "Scene" if the user is in Play mode
 	subscribe("mousemove",function(){
 		if(self.loopy.mode===Loopy.MODE_PLAY && self.dragging && self.dragging._CLASS_==="Scene") {
 			loopy.offsetX += (Mouse.x - self.offsetX);
