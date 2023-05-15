@@ -1,9 +1,24 @@
 // Edge features
+
+// Define a function to convert a bit to a reference
 const bitToRefAnything = (b)=>b;
-injectProperty("edge", "from",{persist:{index:0,binFunc:{bit:bitToRefAnything,encode:(v)=>v.id,decode:(v)=>v},serializeFunc:(v)=>v.id}});
+// Inject "from" property into "edge" object
+injectProperty("edge", "from",
+    {persist:{
+        index:0,binFunc:{
+            bit:bitToRefAnything, // Conversion function for binary values
+            encode:(v)=>v.id, // Encode function for serialization
+            decode:(v)=>v // Decode function for deserialization
+        },
+        serializeFunc:(v)=>v.id // Serialize function for persistence
+    }});
+// Inject "to" property into "edge" object
 injectProperty("edge", "to",{persist:{index:1,binFunc:{bit:bitToRefAnything,encode:(v)=>v.id,decode:(v)=>v},serializeFunc:(v)=>v.id}});
+// Inject "arc" property into "edge" object
 injectProperty("edge", "arc",{persist:{index:2,binFunc:factoryRatio(10,2048,true),serializeFunc:v=>Math.round(v)}});
+// Inject "rotation" property into "edge" object
 injectProperty("edge", "rotation",{persist:{index:4,binFunc:factoryRatio(4,360),serializeFunc:v=>Math.round(v)}});
+// Inject "strength" property into "edge" object
 injectProperty("edge", "strength",{
     defaultValue:1,
     persist:3,
@@ -14,7 +29,7 @@ injectProperty("edge", "strength",{
         simpleOnly: true
     }
 });
-
+// Inject "signBehavior" property into "edge" object
 injectProperty("edge", "signBehavior",{
     defaultValue:0,
     persist:5,
@@ -32,7 +47,7 @@ injectProperty("edge", "signBehavior",{
         advanced: true
     }
 });
-
+// Inject "filter" property into "edge" object
 injectProperty("edge", "filter",{
     defaultValue:0,
     persist:10,
