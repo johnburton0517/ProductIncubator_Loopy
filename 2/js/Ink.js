@@ -1,13 +1,26 @@
 /**********************************
 
-LOOPY!
-- with edit & play mode
+When the user clicks the Pencil Tool in the Toolbar on the left 
+side of the screen or presses N on the keyboard the Pencil tool 
+is selected. Users can connect nodes to each other by drawing a 
+line between 2 nodes or can create a new node by drawing a circle.
 
-TODO: smoother bezier curve?
-TODO: when switch away tool, clear the Ink canvas
+The Ink function initially creates a 2D rendering context of the 
+screen so that the user can draw and initializes an array called 
+strokeData that tracks. It has a class method called drawInk that
+draws the line that the user drew on the screen. It also contains 
+a reset function that clears the canvas and resets the strokeData 
+array. If the mouse is pressed and the program is in Ink mode, the 
+code calls the drawInk function. When the mouse is released, the 
+code either creates a new arrow if the user started and ended 
+drawing in a node or creates a new node otherwise. The program 
+then calls the reset function. There is a helper function called 
+areWeInkEditing that ensures that Loopy is in edit mode. 
+
 
 **********************************/
 
+// Set the minimum radius for ink drawing
 Ink.MINIMUM_RADIUS = LoopyNode.DEFAULT_RADIUS;
 Ink.SNAP_TO_RADIUS = 25;
 
@@ -16,30 +29,30 @@ function Ink(loopy){
 	const self = this;
 	self.loopy = loopy;
 
-	// Create canvas & context
+	// Create html canvas & context
 	const canvas = _createCanvas();
 	const ctx = canvas.getContext("2d");
 	self.canvas = canvas;
 	self.context = ctx;
 
-	// Stroke data!
+	// Stroke data
 	self.strokeData = [];
 
-	// Drawing!
+	// Draws ink strokes from strokeData
 	self.drawInk = function(){
 
 		if(!Mouse.pressed) return;
 
-		// Last point
+		// Get hte last point of where the mouse drew to
 		const lastPoint = self.strokeData[self.strokeData.length-1];
 
-		// Style
+		// Style settings for drawing
 		ctx.save()
 		ctx.strokeStyle = "#ccc";
 		ctx.lineWidth = 5;
 		ctx.lineCap = "round";
 
-		// Draw line from last to current
+		// Draw a line from the last point to the current point
 		applyZoomTransform(ctx);
 		ctx.beginPath();
 		ctx.moveTo(lastPoint[0]*2, lastPoint[1]*2);
@@ -47,14 +60,18 @@ function Ink(loopy){
 		ctx.stroke();
 		ctx.restore();
 
-		// Update last point
+		// Update the last point
 		self.strokeData.push([Mouse.x,Mouse.y]);
 
 	};
+
+	//removes initial ink drawing (the actual line the mouse drew) from screen 
 	self.reset = function(){
 		ctx.clearRect(0,0,canvas.width,canvas.height); // Clear canvas
 		self.strokeData = []; // Reset stroke data
 	};
+
+	// When the mouse is pressed down, add the mouse movements to the strokedata array
 	subscribe("mousedown",function(){
 		if(!areWeInkEditing()) return;
 
@@ -62,14 +79,22 @@ function Ink(loopy){
 		self.strokeData = [];
 		self.strokeData.push([Mouse.x,Mouse.y]);
 
-		// Draw to canvas!
+		// Draw the ink stroke to the canvas 
 		self.drawInk();
 
 	});
+	
+	
+	// If the mouse is moving, draw 
+	// TODO: not sure if this function actually does antthing
+
 	subscribe("mousemove",function(){
 		if(!areWeInkEditing()) return;
 		self.drawInk();
 	});
+
+	// When the user lets go of the mouse down, determine if a node or edge 
+	// needs to be added and add it
 	subscribe("mouseup",function(){
 		if(!areWeInkEditing()) return;
 
@@ -81,16 +106,16 @@ function Ink(loopy){
 		Detect what you drew!
 		1. Started in a node?
 		1a. If ended near/in a node, it's an EDGE.
-		2. If not, it's a NODE. // TODO: actual circle detection?
+		2. If not, it's a NODE. 
 
 		*************************/
 
-		// Started in a node?
+		// Check if the stroke started in a node
 		const startPoint = self.strokeData[0];
 		let startNode = loopy.model.getNodeByPoint(startPoint[0], startPoint[1]);
 		if(!startNode) startNode=loopy.model.getNodeByPoint(startPoint[0], startPoint[1], 20); // try again with buffer
 
-		// Ended in a node?
+		// Check if the stroke ended in a node
 		const endPoint = self.strokeData[self.strokeData.length-1];
 		let endNode = loopy.model.getNodeByPoint(endPoint[0], endPoint[1]);
 		if(!endNode) endNode=loopy.model.getNodeByPoint(endPoint[0], endPoint[1], 40); // try again with buffer
@@ -98,13 +123,17 @@ function Ink(loopy){
 		// EDGE: started AND ended in nodes
 		if(startNode && endNode){
 
-			// Config!
+			// Configure the new edge
 			let edgeConfig = {
 				from: startNode.id,
 				to: endNode.id
 			};
 
-			// If it's the same node...
+			/* 
+			If it's the same node its the same node and the ink is too small,
+			assume the user was trying to edit the node and open editing tool.
+			Otherwise, continue 
+			*/
 			if(startNode===endNode){
 
 				// TODO: clockwise or counterclockwise???
@@ -123,7 +152,7 @@ function Ink(loopy){
 				const rotated = _rotatePoints(translated, -angle);
 				bounds = _getBounds(rotated);
 
-				// Arc & Rotation!
+				// Arc & Rotation
 				edgeConfig.rotation = angle*(360/Math.TAU) + 90;
 				edgeConfig.arc = bounds.right;
 
@@ -139,7 +168,7 @@ function Ink(loopy){
 
 			}else{
 
-				// Otherwise, find the arc by translating & rotating
+				// Translate and rotate to determine the arc
 				const dx = endNode.x-startNode.x;
 				const dy = endNode.y-startNode.y;
 				const angle = Math.atan2(dy,dx);
@@ -147,13 +176,13 @@ function Ink(loopy){
 				const rotated = _rotatePoints(translated, -angle);
 				const bounds = _getBounds(rotated);
 				
-				// Arc!
+				// Calculate the arc
 				if(Math.abs(bounds.top)>Math.abs(bounds.bottom)) edgeConfig.arc = -bounds.top;
 				else edgeConfig.arc = -bounds.bottom;
 
 			}
 
-			// Add the edge!
+			// Create the new edge between the node(s)
 			if(edgeConfig){
 				const newEdge = loopy.model.addEdge(edgeConfig);
 				loopy.sidebar.edit(newEdge);
@@ -161,10 +190,10 @@ function Ink(loopy){
 
 		}
 
-		// NODE: did NOT start in a node.
+		// If the drawing did not start in a node, draw a new node
 		if(!startNode){
 
-			// Just roughly make a circle the size of the bounds of the circle
+			// Make a circle the size of the bounds of the ink
 			const bounds = _getBounds(self.strokeData);
 			const x = (bounds.left+bounds.right)/2;
 			const y = (bounds.top+bounds.bottom)/2;
@@ -194,14 +223,18 @@ function Ink(loopy){
 
 		}
 
-		// Reset.
+		// Reset
 		self.reset();
 
 	});
+
+	// When mouse is clicked but not pressed, reset
 	subscribe("mouseclick",function(){
 		if(!areWeInkEditing()) return;
 		self.reset();
 	});
+
+	// Helper function 
 	const areWeInkEditing = () => self.loopy.mode===Loopy.MODE_EDIT && self.loopy.tool===Loopy.TOOL_INK;
 
 }
