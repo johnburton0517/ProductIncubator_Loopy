@@ -114,11 +114,12 @@ function Sidebar(loopy){
 }
 
 function backToTopButton(sidebar, page){
+	// Create a button to go back to the top
 	page.addComponent(new ComponentButton({
 		header: true,
 		label: "back to top",
 		onclick: function(){
-			sidebar.showPage("Edit");
+			sidebar.showPage("Edit"); // Show the top-level "Edit" page in the sidebar
 		}
 	}));
 }
