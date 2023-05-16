@@ -4,6 +4,7 @@ NODE!
 
 **********************************/
 
+// Define colors for nodes
 LoopyNode.COLORS = {
 	0: "#EA3E3E", // red
 	1: "#EA9D51", // orange
@@ -15,10 +16,12 @@ LoopyNode.COLORS = {
 	7: "rgba(0,0,0,.3)"  // node settings
 };
 
-
+// Setting default values
 LoopyNode.DEFAULT_RADIUS = 60;
 LoopyNode._CLASS_ = "Node";
 
+
+// Node class
 function LoopyNode(model, config){
 
 	const self = this;
@@ -44,16 +47,24 @@ function LoopyNode(model, config){
 		}
 	}
 	self.initFillRateOrDead();
+	
+	
 	// TODO: ACTUALLY VISUALIZE AN INFINITE RANGE
 	self.bound = function(){ // bound ONLY when changing value.
 		/*var buffer = 1.2;
 		if(self.value<-buffer) self.value=-buffer;
 		if(self.value>1+buffer) self.value=1+buffer;*/
 	};
+
+	// Determine if the node is read-only
 	function readOnlyRules(){
 		// console.log(self.interactive);
 		return self.loopy.mode!==Loopy.MODE_PLAY || self.interactive === 0 || (self.died && self.interactive >= 3);
+		// interactive  = 0: read-only
+		// interactive >= 3: read-only when dead
 	}
+
+	// Checks if edge can send negative signals
 	function isBottomArrow(){
 		return !readOnlyRules() && self.interactive !== 1 && self.interactive !== 3;
 	}
@@ -80,6 +91,8 @@ function LoopyNode(model, config){
 		}
 
 	});
+
+	//Mouse event handlers
 	const _listenerMouseDown = subscribe("mousedown",function(){
 
 		if(readOnlyRules()) return;
@@ -98,10 +111,12 @@ function LoopyNode(model, config){
 		}
 
 	});
+	// Stops taking input when mouse is released
 	const _listenerMouseUp = subscribe("mouseup",function(){
 		if(readOnlyRules()) return;
 		_controlsPressed = false;
 	});
+	//resets model
 	const _listenerReset = subscribe("model/reset", function(){
 		self.value = self.init;
 		self.reseted=true;
@@ -112,7 +127,9 @@ function LoopyNode(model, config){
 	// SIGNALS ///////////////////////////
 	//////////////////////////////////////
 
+	// Send a signal from this node to the connected nodes
 	self.sendSignal = function(signal){
+		// do nothing if node is dead or singal 
 		if(self.died && !signal.vital) return;
 		let myEdges = self.model.getEdgesByStartNode(self);
 
@@ -171,7 +188,6 @@ function LoopyNode(model, config){
 			if(edge.quantitative===1) quantitativeAcceptingEdges.push(edge);
 		}
 		// Quantitative handling
-
 		if(quantitativeAcceptingEdges.length){
 			let delta;
 			if( (loopy.colorLogic===1 && self.hue !== signal.color)
@@ -191,15 +207,27 @@ function LoopyNode(model, config){
 		if(self.value>1) self.value = 1;
 	};
 
+	// Receieves a signal from another node
 	self.takeSignal = function(signal,fromEdge=undefined){
+		// Drop signal if wrong color and color logic is enabled
 		if(loopy.colorLogic && self.foreignColor && signal.color!==self.hue) return; // drop signal
+		
+		// Properly handle positives and negatives
 		if(signal.vital && signal.delta>0) return self.live(signal);
 		if(signal.vital && signal.delta<0) return self.die(signal);
+		
+		// Do nothing if dead
 		if(self.died) return;
-		if(loopy.colorLogic && fromEdge && fromEdge.edgeTargetColor===-3) return self.hue = signal.color;
+		
+		// Update edge color to node color if color logic is on and edge is set to change colors to node
+ 		if(loopy.colorLogic && fromEdge && fromEdge.edgeTargetColor===-3) return self.hue = signal.color;
+		
+		
+		// Initialize delta pool and aggregate if needed
 		if(!self.deltaPool) self.deltaPool=0;
 		if(!self.aggregate) self.aggregate = 0;
 
+		// Change Node's value based on signal data
 		if(self.hue === signal.color || loopy.colorLogic===0){
 			self.value += signal.delta/self.size;
 			self.deltaPool += signal.delta/self.size;
@@ -208,12 +236,12 @@ function LoopyNode(model, config){
 			if(signal.delta>0) _offsetVel -= 6 ;
 			if(signal.delta<0) _offsetVel += 6 ;
 
-			// Implode ?
+			// Implode if enabled and node value is negative 
 			if((self.explode === -1 || self.explode === 2) && self.value<0){
 				self.value = 0;
 				return self.die(signal);
 			}
-			// Explode ?
+			// Explode if enabled and node value is > 1
 			if((self.explode === 1 || self.explode === 2) && self.value>1) {
 				self.value = 1;
 				return self.die(signal);
@@ -221,18 +249,26 @@ function LoopyNode(model, config){
 
 			if(self.aggregate) return;
 		}
+
+		// Update age
 		self.lastSignalAge = signal.age;
 		self.reseted = false;
 
+		// Change value of node
 		if(loopy.colorLogic===0 || self.hue === signal.color){
 			self.valueBeforeAggregationPool = self.value - signal.delta/self.size;
 		}
+
+		// Propogate signal if enabled
 		if(loopy.colorLogic===1 && self.hue !== signal.color){
 			const newSignal = {delta:signal.delta,age:signal.age,color:signal.color,vital:signal.vital};
 			return self.sendSignal(newSignal);
 		}
 
+		// Calculate speed
 		const signalSpeedRatio = 8 / Math.pow(2,self.loopy.signalSpeed);
+		
+		// Function to Send a new signal and reset delta pool
 		const aggregateFunc = () => {
 			if(self.loopy.mode===Loopy.MODE_PLAY && !self.reseted){
 				const newSignal = {
@@ -247,6 +283,7 @@ function LoopyNode(model, config){
 			self.deltaPool=0;
 		};
 
+		// Handles late aggregation
 		if(self.aggregationLatency){
 			self.aggregate = setTimeout( aggregateFunc,1000 * self.aggregationLatency * signalSpeedRatio);
 			self.aggregateStartTime = Date.now();
@@ -378,6 +415,9 @@ function LoopyNode(model, config){
 		ctx.fillStyle = color;
 		ctx.fill();
 
+
+
+		// Overflow logic
 		if(self.overflow>0){
 			const arrow = (angle)=>{
 				ctx.save();
@@ -394,6 +434,8 @@ function LoopyNode(model, config){
 			}
 			for(let a = 0; a < 2*Math.PI;a+=Math.PI*0.125) arrow(a);
 		}
+
+		// Underflow logic
 		if(self.underflow<1){
 			const arrow = (angle)=>{
 				ctx.save();
@@ -410,8 +452,9 @@ function LoopyNode(model, config){
 			}
 			for(let a = -Math.PI*0.125/2; a < 2*Math.PI;a+=Math.PI*0.125) arrow(a);
 		}
+
+		// show aggregationLatency visual
 		if(self.aggregationLatency>0){
-			// show aggregationLatency visual
 			ctx.save();
 			ctx.beginPath();
 			const size = 1.8;
@@ -427,6 +470,7 @@ function LoopyNode(model, config){
 			ctx.fillStyle = color;
 			ctx.fill();
 
+			// Draws the chronometer
 			const chronoPart = (baseAngle,size)=>{
 				ctx.beginPath();
 				const line = (rx,ry)=>radialLine(ctx,baseAngle,r,size,rx,ry);
@@ -472,6 +516,7 @@ function LoopyNode(model, config){
 			ctx.restore();
 
 		}
+		// Draws the node implosion
 		if(self.explode === -1 || self.explode === 2){
 			// show this node can implode
 			const line = (angle)=>{
@@ -487,6 +532,7 @@ function LoopyNode(model, config){
 			}
 			for(let a = 0; a < 2*Math.PI;a+=Math.PI*0.5) line(a);
 		}
+		// Draws the node explosion
 		if(self.explode === 1 || self.explode === 2){
 			// show this node can explode
 			const line = (angle)=>{
@@ -503,7 +549,7 @@ function LoopyNode(model, config){
 			for(let a = 0; a < 2*Math.PI;a+=Math.PI*0.25) line(a);
 		}
 
-		// Text!
+		// Draws the label
 		if(self.label){
 			let fontsize = 40;
 			ctx.font = "normal "+fontsize+"px sans-serif";
