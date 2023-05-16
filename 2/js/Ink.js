@@ -43,7 +43,7 @@ function Ink(loopy){
 
 		if(!Mouse.pressed) return;
 
-		// Get hte last point of where the mouse drew to
+		// Get the last point of where the mouse drew to
 		const lastPoint = self.strokeData[self.strokeData.length-1];
 
 		// Style settings for drawing
