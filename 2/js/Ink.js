@@ -43,7 +43,7 @@ function Ink(loopy){
 
 		if(!Mouse.pressed) return;
 
-		// Get hte last point of where the mouse drew to
+		// Get the last point of where the mouse drew to
 		const lastPoint = self.strokeData[self.strokeData.length-1];
 
 		// Style settings for drawing
@@ -86,7 +86,7 @@ function Ink(loopy){
 	
 	
 	// If the mouse is moving, draw 
-	// TODO: not sure if this function actually does antthing
+	// TODO: not sure if this function actually does anything
 
 	subscribe("mousemove",function(){
 		if(!areWeInkEditing()) return;
@@ -199,7 +199,7 @@ function Ink(loopy){
 			const y = (bounds.top+bounds.bottom)/2;
 			let r = ((bounds.width/2)+(bounds.height/2))/2;
 
-			// Circle can't be TOO smol
+			// Circle can't be TOO small
 			if(r>15){
 
 				// Snap to radius

@@ -1,3 +1,4 @@
+// this code provides functionality to manipulate and store binary data in a compressed or uncompressed form using a bit-level representation
 function BitArray(arrayBufferOrBitSize){
     const self = this;
     if(typeof arrayBufferOrBitSize === "number") self.rawData = new Uint8Array(Math.ceil(arrayBufferOrBitSize/8));
@@ -6,6 +7,8 @@ function BitArray(arrayBufferOrBitSize){
     self.offset=0;
     self.maxOffset=0;
 
+    // Performs bit manipulation operations to set the value at the specified offset, handling cases where the value spans multiple blocks.
+    // It accepts the value to set, the bit size (optional), and the offset (optional).
     self.set = (value,bitSize=-1,offset= -1)=>{
         if(bitSize===0) return self;
         if(typeof value !== "number") {
@@ -53,10 +56,14 @@ function BitArray(arrayBufferOrBitSize){
         }
         return self;
     };
+
+    // Appends a value to the end of the bitArray
     self.append = (value,bitSize=-1)=>{
         self.set(value,bitSize);
         return self;
     };
+
+    // Determines whether a bit size should be compressed
     function shouldBeCompressed(bitSize){
         const bitForDataSize = Math.ceil(Math.log2(bitSize));
         const refBitSize = Math.floor(bitForDataSize/2);
@@ -66,6 +73,12 @@ function BitArray(arrayBufferOrBitSize){
         ;//+1+bitForDataSize; // original content in ref line
         return bitSize>=zMinSize*3; // if small bitSize it will be more often bigger than smaller so dont compress
     }
+
+    /* 
+      *  Pushes a value to the BitArray while considering compression. 
+      *  If compression is not necessary, it calls the append method. 
+      *  Otherwise, it tries to find patterns in the BitArray and replaces them with references to achieve compression.
+    */
     self.zPush = (value,bitSize,zAreaStartOffset=0)=>{
         if(!shouldBeCompressed(bitSize)) return self.append(value,bitSize);
         if(zAreaStartOffset===self.offset) return self.append(value,bitSize);
@@ -121,12 +134,18 @@ function BitArray(arrayBufferOrBitSize){
             (new BitArray(bitSize+1)).append(0,1).append(value.resetOffset(),bitSize));// default vanilla line
         return self.append(smallest.resetOffset(),smallest.maxOffset);
     };
+
+    // Resets offset to 0
     self.resetOffset = ()=>self.setOffset(0);
+
+    // Sets the offset to to value passed in and updates maxOffset
     self.setOffset = (offset)=>{
         self.maxOffset = Math.max(self.maxOffset,self.offset,offset);
         self.offset = offset;
         return self;
     };
+
+    // Compares a sequence of bits in the BitArray with a sequence in another BitArray and returns whether they are equal.
     self.equalSequence = (bitSize, selfStartOffset, bitArray,itStartOffset)=>{
         const a = self.export(bitSize,selfStartOffset);
         const b = bitArray.export(bitSize,itStartOffset);
@@ -134,6 +153,8 @@ function BitArray(arrayBufferOrBitSize){
         for(let i =0; i<a.rawData.byteLength;i++) if(a.rawData[i]!==b.rawData[i]) equal=false;
         return equal;
     };
+
+    // Concatenates two BitArray instances and returns a new BitArray with the concatenated data.
     self.concat = (bitArray)=>{
         const concatenated = new BitArray(self.offset+bitArray.offset);
         const backupSelfOffset = self.offset;
@@ -146,7 +167,9 @@ function BitArray(arrayBufferOrBitSize){
         bitArray.setOffset(backupBitArrayOffset);
         return concatenated;
     };
+
     const zCache = [];
+    // populates the zCache array, which stores compressed representations of the BitArray. It is used by the zPush and zGet methods.
     function fillZCache(bitSize,zAreaStartOffset,cacheToLine=false){
         const bitForDataSize = Math.ceil(Math.log2(bitSize));
         const refBitSize = Math.floor(bitForDataSize/2);
@@ -190,6 +213,8 @@ function BitArray(arrayBufferOrBitSize){
             cacheOffset+=zc[i].zSize;
         }
     }
+
+    // retrieves a value from the BitArray, considering compression. It can retrieve a specific line from the zCache or the last line if no line is specified.
     self.zGet = (bitSize,zAreaStartOffset=0,zLine= NaN)=>{
         if(!shouldBeCompressed(bitSize)){
             if(isFinite(zLine) && zLine>=0) return self.get(bitSize,zAreaStartOffset+zLine*bitSize);
@@ -205,6 +230,8 @@ function BitArray(arrayBufferOrBitSize){
         else if(isFinite(zLine) && zLine<0) return zc[zc.length+zLine].content;
         else return zc[zc.length-1].content;
     };
+
+    // retrieves a value of the specified bit size at the specified offset in the BitArray
     self.get=(bitSize,offset = -1)=>{
         if(offset === -1){
             offset = self.offset;
@@ -235,6 +262,8 @@ function BitArray(arrayBufferOrBitSize){
             return  result+remaining;
         }
     };
+
+    // exports a subarray of the BitArray as a new BitArray instance
     self.export=(bitSize,offset = -1)=>{
         if(offset === -1){
             offset = self.offset;
@@ -270,6 +299,8 @@ function BitArray(arrayBufferOrBitSize){
         }
 
     };
+
+    // Performs a circular rotation of bits within the BitArray based on the provided bit and line counts.
     self.rotate = (bitByLine, lineCount, startOffset= -1)=>{
         if( !bitByLine || !lineCount) return self;
         if(startOffset === -1){

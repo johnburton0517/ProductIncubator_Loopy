@@ -3,6 +3,8 @@
     defaultValue:0, // bool
     persist:0, // reserved
 });*/
+
+// Injects property: loopyMode (simple or advanced)
 injectProperty("loopy", "loopyMode",{
     defaultValue:0,
     persist:1,
@@ -13,6 +15,8 @@ injectProperty("loopy", "loopyMode",{
         oninput: factorySwitchMode("simple","advanced")
     }
 });
+
+// Injects property: colorLogic (Color Aesthetic or Color Logic)
 injectProperty("loopy", "colorLogic",{
     defaultValue:0,
     persist:2,
@@ -24,6 +28,8 @@ injectProperty("loopy", "colorLogic",{
         oninput: factorySwitchMode("colorAestheticMode","colorLogicMode")
     }
 });
+
+// Injects property: cameraMode (resize, follow signals, user controllable)
 injectProperty("loopy", "cameraMode",{
     defaultValue:0,
     persist:3,
@@ -42,6 +48,8 @@ injectProperty("loopy", "cameraMode",{
     defaultValue:0, // bool
     persist:3, // reserved
 });*/
+
+// Injects property: beforeAll (HTML snippet for the beginning of the sidebar) -> see examples, how to, credits
 injectProperty("loopy", "beforeAll",{
     sideBar:{
         index: 0,
@@ -54,6 +62,9 @@ injectProperty("loopy", "beforeAll",{
         <br><hr class="not_in_play_mode"/>`
     }
 });
+
+// Injects property: afterAll (HTML snippet for the end of the sidebar) 
+// -> save as link, embed in your blog, save as file, load from file, json export, load from url, import extra file, make a GIF using LICEcap
 injectProperty("loopy", "afterAll",{
     sideBar:{
         index: 99,
@@ -94,6 +105,8 @@ injectProperty("loopy", "afterAll",{
         `
     }
 });
+
+// Function to switch between simple and advanced mode
 function factorySwitchMode(disabledClass,activatedClass){
     return function(self, value){
         let apply;

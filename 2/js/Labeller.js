@@ -1,6 +1,18 @@
 /**********************************
 
-LABELLER
+User Summary
+
+This code contains the functionality of the text button of
+the toolbar on the left. It enables the user to either edit 
+an existing label or create a new one. 
+
+Technical Summary
+
+The function Labeller contains the function tryMakingLabel, 
+which first ensures the user is in edit mode and that the 
+label editor is active and returns if not. If the user 
+selects a label, the label editor appears. If not, a new 
+label is created and then the label editor appears.
 
 **********************************/
 

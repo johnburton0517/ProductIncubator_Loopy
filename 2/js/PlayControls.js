@@ -45,7 +45,7 @@ function PlayControls(loopy){
 	})();
 
 
-	// During the Player
+	// During the Play Mode adds buttons like stop, reset, speed slider.
 	(function(){
 		const page = new Page();
 		const _addButton = function (side, config) {
@@ -55,7 +55,9 @@ function PlayControls(loopy){
 			buttonDOM.style.top = "0px";
 		};
 
-		if(loopy.embedded){
+		// If embedded in another site shows different control buttons when in play mode. 
+		// Example: Click "embed in your blog" from the sidebar
+		if(loopy.embedded){ 
 			// Reset | Remix
 			_addButton("left", {label: "Reset", icon: 2, onclick: ()=>publish("model/reset") });
 			_addButton("right", {label: "Remix", icon: 3, onclick: ()=>window.open(loopy.saveToURL(),'_blank') });
@@ -80,7 +82,7 @@ function PlayControls(loopy){
 	})();
 	
 }
-
+// Creates the play button
 function PlayButton(config){
 
 	const self = this;
@@ -99,6 +101,7 @@ function PlayButton(config){
 	}
 
 }
+// Creates the speed slider
 function PlaySlider(config){
 
 	const self = this;
@@ -128,6 +131,8 @@ function PlaySlider(config){
 	};
 
 }
+// Creates image elements for the dom. 
+// Used for Slow and Fast icons for speed slider
 function domSpeedImg(src,side) {
 	const img = new Image();
 	img.src = src;

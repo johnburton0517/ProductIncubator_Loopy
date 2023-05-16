@@ -15,19 +15,26 @@ Edge.COLORS = {
 	6: "#DDDDDD"  // light grey -> died
 };
 
+// Array to hold all signals in the system
 Edge.allSignals = [];
+// Max number of signals allowed in the system
 Edge.MAX_SIGNALS = 100;
+// Max number of signals allowed on a single edge
 Edge.MAX_SIGNALS_PER_EDGE = 10;
+// Class name for the Edge object
 Edge._CLASS_ = "Edge";
 
+// Constructor for the Edge object
 function Edge(model, config){
 
 	const self = this;
 	self._CLASS_ = "Edge";
 
-	// Mah Parents!
+	// Reference to the Loopy object
 	self.loopy = model.loopy;
+	// Reference to the Model object
 	self.model = model;
+	// Configuration object for the Edge
 	self.config = config;
 
 	// Default values...
@@ -40,18 +47,22 @@ function Edge(model, config){
 	injectedDefaultProps(defaultProperties,objTypeToTypeIndex("edge"));
 	_configureProperties(self, config, defaultProperties);
 
-	// Get my NODES
+	// Get the source and target nodes
 	self.from = model.getNode(self.from);
 	self.to = model.getNode(self.to);
 
-	// We have signals!
+	// Array to hold all signals on this edge
 	self.signals = [];
+	// Speed of the signals on this edge
 	self.signalSpeed = 0;
-	self.addSignal = function(signal){
 
+	// Function to add a signal to the edge
+	self.addSignal = function(signal){
+		// Check if the target node is dead and if the signal can transmit life
 		if(self.to.died && !canTransmitLife(self)) return;
 
 		const edge = self;
+		
 		if(loopy.colorLogic===1){
 			if(edge.edgeTargetColor=== -2) { // choose random color from possible colors
 				let candidateColors = {};
@@ -64,12 +75,12 @@ function Edge(model, config){
 			else signal.finalColor = edge.edgeTargetColor; // change to color
 		} else signal.finalColor = edge.to.hue; // no logic just aesthetic !
 
-		// IF ALREADY TOO MANY, FORGET IT
+		// If there are too many signals in the system, ignore the new signal
 		if(Edge.allSignals.length>Edge.MAX_SIGNALS){
 			return;
 		}
 
-		// IF TOO MANY *ON THIS EDGE*, FORGET IT
+		// If the edge already has too many signals, ignore the new signal
 		if(self.signals.length>Edge.MAX_SIGNALS_PER_EDGE){
 			return;
 		}
@@ -80,6 +91,8 @@ function Edge(model, config){
 			// age = 13; // cos divisible by 1,2,3,4 + 1
 			age = 1000000; // actually just make signals last "forever".
 		} else age = signal.age-1;
+
+		// Create a new signal object 
 		const newSignal = {
 			delta: signal.delta,
 			position: 0,
@@ -91,22 +104,23 @@ function Edge(model, config){
 			age: age,
 		};
 
-		// If it's expired, forget it.
+		// If the signal is expired (age <= 0), return and do nothing.
 		if(age<=0) return;
 
+		// Add the new signal to the beginning of the signals array
 		self.signals.unshift(newSignal); // it's a queue!
 
-		// ALL signals.
+		// Add the new signal to the global array of signals
 		Edge.allSignals.push(newSignal);
 
 	};
-	self.updateSignals = function(){
 
-		// Speed?
+	self.updateSignals = function(){
+		// Calculate the speed of the signals on this edge
 		const speed = Math.pow(2,self.loopy.signalSpeed);
 		self.signalSpeed = speed/self.getArrowLength();
 
-		// Move all signals along
+		// Move all signals along the arrow
 		for(let i=0; i<self.signals.length; i++){
 
 			const signal = self.signals[i];
@@ -140,7 +154,7 @@ function Edge(model, config){
 		let lastSignal = self.signals[self.signals.length-1];
 		while(lastSignal && lastSignal.position>=1){
 
-			// Actually pass it along
+			// Adjust the signal's position based on the edge's properties and pass it along to the target node
 			if(loopy.loopyMode===0 && self.signBehavior===0){
 				lastSignal.delta *= self.strength;
 			}else {
@@ -155,7 +169,7 @@ function Edge(model, config){
 			lastSignal.color = lastSignal.finalColor;
 			self.to.takeSignal(lastSignal, self);
 
-			// Pop it, move on down
+			// Remove the signal from this edge
 			self.removeSignal(lastSignal);
 			lastSignal = self.signals[self.signals.length-1];
 
@@ -163,6 +177,7 @@ function Edge(model, config){
 
 	};
 	self.removeSignal = function(signal){
+		// Remove the signal from the array and from the global array
 		self.signals.splice( self.signals.indexOf(signal), 1 );
 		Edge.allSignals.splice( Edge.allSignals.indexOf(signal), 1 );
 	};
@@ -448,8 +463,6 @@ function Edge(model, config){
 
 	// Draw
 	self.draw = function(ctx){
-
-
 
 		// Width & Color
 		if(self.edgeTargetColor===-3) {
