@@ -1,6 +1,6 @@
 // LoopyNode features
 function updateNodeSize (self,v){
-    // LoopyNode size
+    // Adjust the radius based on the size of the selected node
     const selectedNode = self.page.target;
     if(selectedNode.size===5) selectedNode.radius=1.2*LoopyNode.DEFAULT_RADIUS;
     if(selectedNode.size===100) selectedNode.radius=1.5*LoopyNode.DEFAULT_RADIUS;
@@ -8,8 +8,13 @@ function updateNodeSize (self,v){
     if(selectedNode.size<1) selectedNode.radius=0.5*LoopyNode.DEFAULT_RADIUS;
     if(!selectedNode.label) selectedNode.radius=0.1*LoopyNode.DEFAULT_RADIUS;
 }
+
+// Inject a property into the LoopyNode class
+// Property: id
 injectProperty("node", "id",{persist:{index:0,jsonOnly:true}});
+// Property: x
 injectProperty("node", "x",{persist:{index:1,binFunc:factoryRatioForXY(),serializeFunc:v=>Math.round(v)}});
+// Property: y
 injectProperty("node", "y",{persist:{index:2,binFunc:factoryRatioForXY(),serializeFunc:v=>Math.round(v)}});
 /**
  * toggleable visibility in play mode (visible, hidden in play mode, hidden when dead)
@@ -18,6 +23,7 @@ injectProperty("node", "y",{persist:{index:2,binFunc:factoryRatioForXY(),seriali
  *
  * borderless switch (if borderless, scale it up a bit and remove borders)
  */
+// Property: label
 injectProperty("node", "label",{
     defaultValue:"?",
     immutableDefault:true,
@@ -32,6 +38,8 @@ injectProperty("node", "label",{
         oninput: updateNodeSize,
     }
 });
+
+// Property: hue
 injectProperty("node", "hue",{
     defaultValue:0,
     persist:5,
@@ -41,6 +49,8 @@ injectProperty("node", "hue",{
         label: "Color :"
     }
 });
+
+// Property: size
 injectProperty("node", "size",{
     defaultValue:1,
     persist:6,
@@ -59,6 +69,8 @@ injectProperty("node", "size",{
         advanced: true
     }
 });
+
+// Property: init (initial fill)
 injectProperty("node", "init",{
     defaultValue:0.5,
     persist:3,
@@ -78,6 +90,8 @@ injectProperty("node", "init",{
         }
     }
 });
+
+// Property: capacity (maximum fill)
 injectProperty("node", "overflow",{
     defaultValue:0,
     persist:8,
@@ -90,6 +104,8 @@ injectProperty("node", "overflow",{
         activeAtRight:true,
     }
 });
+
+// Property: underflow (minimum fill)
 injectProperty("node", "underflow",{
     defaultValue:1,
     persist:9,
@@ -101,6 +117,8 @@ injectProperty("node", "underflow",{
         activeAtLeft:true,
     }
 });
+
+// Property: aggregationLatency (time delay)
 injectProperty("node", "aggregationLatency",{
     defaultValue:0,
     persist:7,
@@ -111,6 +129,8 @@ injectProperty("node", "aggregationLatency",{
         advanced: true
     }
 });
+
+// Property: explode (explode if full or empty) -> node dies
 injectProperty("node", "explode",{
     defaultValue:0,
     persist:10,
@@ -128,6 +148,8 @@ injectProperty("node", "explode",{
         advanced: true
     }
 });
+
+// Property: foreignColor (color of incoming signals is different)
 injectProperty("node", "foreignColor",{
     defaultValue:0,
     persist:11,
@@ -139,6 +161,8 @@ injectProperty("node", "foreignColor",{
         colorLogic:true
     }
 });
+
+// Property: interactive (can the node be interacted with or just observed)
 injectProperty("node", "interactive",{
     defaultValue:2,
     persist:12,

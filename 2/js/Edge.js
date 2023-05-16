@@ -91,6 +91,8 @@ function Edge(model, config){
 			// age = 13; // cos divisible by 1,2,3,4 + 1
 			age = 1000000; // actually just make signals last "forever".
 		} else age = signal.age-1;
+
+		// Create a new signal object 
 		const newSignal = {
 			delta: signal.delta,
 			position: 0,
@@ -112,13 +114,13 @@ function Edge(model, config){
 		Edge.allSignals.push(newSignal);
 
 	};
-	self.updateSignals = function(){
 
+	self.updateSignals = function(){
 		// Calculate the speed of the signals on this edge
 		const speed = Math.pow(2,self.loopy.signalSpeed);
 		self.signalSpeed = speed/self.getArrowLength();
 
-		// Move all signals along teh arrow
+		// Move all signals along the arrow
 		for(let i=0; i<self.signals.length; i++){
 
 			const signal = self.signals[i];
@@ -461,8 +463,6 @@ function Edge(model, config){
 
 	// Draw
 	self.draw = function(ctx){
-
-
 
 		// Width & Color
 		if(self.edgeTargetColor===-3) {
