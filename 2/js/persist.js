@@ -1,48 +1,74 @@
 // noinspection JSUnusedGlobalSymbols
+
 function log(bitArray) {
     console.log(bitArray.maxOffset,binView(bitArray.rawData.buffer));
 }
+
+// Function to save an object to a BitArray in binary format
 function saveToBinary(bitArray,objToPersist,typeIndex,entityBitSize,bitToRefAnyEntity){
     const toSave = [];
+    // Iterate over the properties defined in the PERSIST_MODEL for the given typeIndex
     for(let i in PERSIST_MODEL[typeIndex]) {
         const prop = PERSIST_MODEL[typeIndex][i];
         if(prop.bit) {
             let bitSize = prop.bit;
+            // If the bit size is a function, calculate it dynamically
             if(typeof prop.bit === "function") bitSize = prop.bit(bitToRefAnyEntity);
+            // Check for collisions (duplicate properties)
             if(typeof toSave[i] !== "undefined") throw `collision : ${typeIndex} ${prop.name}`;
+            // Encode the property value and store it in the toSave array
             toSave[i] = {value:prop.encode(objToPersist[prop.name]),bit:bitSize};
         }
     }
+
+    // Create a temporary BitArray to store the encoded properties
     const tmpBitArray = new BitArray(entityBitSize);
+    // Append the encoded properties to the temporary BitArray
     toSave.forEach((e)=>tmpBitArray.append(e.value,e.bit));
+    // Reset the offset of the temporary BitArray
     tmpBitArray.offset = 0;
+    // Append the temporary BitArray to the main BitArray
     bitArray.append(tmpBitArray,entityBitSize);
 }
+
+// Function to load an object from a BitArray in binary format
 function loadFromBinary(bitArray,typeIndex,bitSize,entitiesCount,bitToRefAnyEntity) {
     const entity = {};
     const startOffset = bitArray.offset;
+
+    // Iterate over the properties defined in the PERSIST_MODEL for the given typeIndex
     for(let i in PERSIST_MODEL[typeIndex]) {
         const prop = PERSIST_MODEL[typeIndex][i];
         if(prop.bit) {
             let propBitSize = prop.bit;
+            // If the bit size is a function, calculate it dynamically
             if(typeof prop.bit === "function") propBitSize = prop.bit(bitToRefAnyEntity);
+            // Check for collisions (duplicate properties)
             if(bitArray.offset+propBitSize>startOffset+bitSize) break;
+            // Read the raw value from the BitArray and decode it
             const rawValue = bitArray.get(propBitSize)
             entity[prop.name] = prop.decode(rawValue);
         }
     }
+    // Set the offset of the main BitArray to the end of the loaded entity
     bitArray.setOffset(startOffset+bitSize);
     return entity;
 }
+
+// Function to save an object to a human readable JSON object
 function humanReadableJsonPersistProps(objToPersist) {
     const typeIndex = objTypeToTypeIndex(objToPersist);
     const persist = {};
+    // Iterate over the properties defined in the PERSIST_MODEL for the given typeIndex
     for(let i in PERSIST_MODEL[typeIndex]) persist[PERSIST_MODEL[typeIndex][i].name] = PERSIST_MODEL[typeIndex][i].serializeFunc( objToPersist[PERSIST_MODEL[typeIndex][i].name]);
     return persist;
 }
+
+// Function to serialize an object to a legacy JSON format
 function legacyJsonPersistProps(objToPersist) {
     const typeIndex = objTypeToTypeIndex(objToPersist);
     const persistArray = [];
+    // Iterate over the properties defined in the PERSIST_MODEL for the given typeIndex
     for(let i in PERSIST_MODEL[typeIndex]) persistArray[i] = PERSIST_MODEL[typeIndex][i].serializeFunc( objToPersist[PERSIST_MODEL[typeIndex][i].name]);
     return persistArray;
 }
@@ -55,6 +81,7 @@ function legacyJsonRestoreProps(srcArray, targetConfig, typeIndex) {
     }
     return targetConfig;
 }
+
 function legacyIdFix(newModel){
     newModel.nodes.forEach((n,i)=>{
         if(n.id && n.id !== i){
