@@ -4,7 +4,7 @@ NODE!
 
 **********************************/
 
-l// Define colors for nodes
+// Define colors for nodes
 LoopyNode.COLORS = {
 	0: "#EA3E3E", // red
 	1: "#EA9D51", // orange
