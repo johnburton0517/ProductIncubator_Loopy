@@ -30,7 +30,7 @@ function Model(loopy){
 		return self.nodes[id];
 	};
 
-	// Remove LoopyNode
+	// Add LoopyNode
 	self.addNode = function(config){
 
 		// Model's been changed!
@@ -75,7 +75,7 @@ function Model(loopy){
 	// Edges
 	self.edges = [];
 
-	// Remove edge
+	// Add edge
 	self.addEdge = function(config){
 
 		// Model's been changed!
@@ -106,7 +106,7 @@ function Model(loopy){
 			return(edge.from===startNode);
 		});
 	};
-	// Get all edges with start node
+	// Get all edges with end node
 	self.getEdgesByEndNode = function(endNode){
 		return self.edges.filter(function(edge){
 			return(edge.to===endNode);
@@ -123,7 +123,7 @@ function Model(loopy){
 	// Labels
 	self.labels = [];
 
-	// Remove label
+	// Add label
 	self.addLabel = function(config){
 
 		// Model's been changed!
@@ -159,13 +159,13 @@ function Model(loopy){
 	// Groups
 	self.groups = [];
 
-	// Remove label
+	// Add Group
 	self.addGroup = function(config){
 
 		// Model's been changed!
 		publish("model/changed");
 
-		// Add label
+		// Add Group
 		const group = new Group(self,config);
 		self.groups.push(group);
 		applyInitialPropEffects(group);
@@ -179,7 +179,7 @@ function Model(loopy){
 		// Model's been changed!
 		publish("model/changed");
 
-		// Remove label
+		// Remove Group
 		self.groups.splice(self.groups.indexOf(group),1);
 
 	};
@@ -191,16 +191,17 @@ function Model(loopy){
 	///////////////////
 
 	let _canvasDirty = false;
-
+	
+	// Calls the update method in the edge and loopyNode classes on all edges and nodes
 	self.update = function(){
 
 		// Update edges THEN nodes
-		for(let i=0;i<self.edges.length;i++) self.edges[i].update(self.speed);
-		for(let i=0;i<self.nodes.length;i++) self.nodes[i].update(self.speed);
+		for(let i=0;i<self.edges.length;i++) self.edges[i].update(self.speed); // speed does not appear to be used anymore
+		for(let i=0;i<self.nodes.length;i++) self.nodes[i].update(self.speed); // speed does not appear to be used anymore
 
 		// Dirty!
 		_canvasDirty = true;
-
+		
 	};
 
 	// SHOULD WE DRAW?
@@ -227,8 +228,9 @@ function Model(loopy){
 		}
 	});
 
+	// Draws all Nodes, edges, labels on the canvas 
 	self.draw = function(){
-
+		
 		// SHOULD WE DRAW?
 		// ONLY IF ARROW-SIGNALS ARE MOVING
 		for(let i=0;i<self.edges.length;i++){
@@ -246,7 +248,8 @@ function Model(loopy){
 		if(!_canvasDirty) return;
 		_canvasDirty = false;
 
-		if(self.loopy.mode===Loopy.MODE_PLAY && loopy.cameraMode===0){
+		// cameraMode 0 = resize to scene, 1 = follow signals
+		if(self.loopy.mode===Loopy.MODE_PLAY && loopy.cameraMode===0){  
 			self.smoothCameraMove(self.getBounds()); // 0.1
 		}
 		if(self.loopy.mode===Loopy.MODE_PLAY && loopy.cameraMode===1){
@@ -286,7 +289,7 @@ function Model(loopy){
 	// import Model //
 	//////////////////
 
-
+	// Imports saved loopy models, also allows for current model to be merged with saved model
 	self.importModel = (newModel, mergeWithCurrent= false)=>{
 		if(mergeWithCurrent) newModel = bumpIdsToAvoidMergeCollision(newModel);
 		else self.clear();
@@ -311,6 +314,7 @@ function Model(loopy){
 		},0); // do it when loopy is fully load, else it's sheety
 	}
 
+	// Clears the canvas
 	self.clear = function(){
 
 		// Just kill ALL nodes.
@@ -329,6 +333,7 @@ function Model(loopy){
 	// HELPER METHODS //
 	////////////////////
 
+	// Gets node based on x,y cords. Helps with checking if you clicked on a node.
 	self.getNodeByPoint = function(x,y,buffer){
 		//var result;
 		for(let i=self.nodes.length-1; i>=0; i--){ // top-down
@@ -338,6 +343,7 @@ function Model(loopy){
 		return null;
 	};
 
+	// Gets edge based on x,y cords. Helps with checking if you clicked on a edge.
 	//self.getEdgeByPoint = function(x, y, wholeArrow){
 	self.getEdgeByPoint = function(x, y){
 		// TODO: wholeArrow option?
@@ -349,6 +355,7 @@ function Model(loopy){
 		return null;
 	};
 
+	// Gets label based on x,y cords. Helps with checking if you clicked on a label.
 	self.getLabelByPoint = function(x, y){
 		//var result;
 		for(let i=self.labels.length-1; i>=0; i--){ // top-down
@@ -396,6 +403,8 @@ function Model(loopy){
 		loopy.sidebar.showPage("Edit");
 
 	});
+
+	// Allows for zoom on the canvas
 	subscribe("mousewheel",function(mouse){
 		// ONLY WHEN EDITING (or MODE_PLAY in freeCam)
 		if(self.loopy.mode===Loopy.MODE_EDIT || (self.loopy.mode===Loopy.MODE_PLAY && loopy.cameraMode===2)){
@@ -408,7 +417,8 @@ function Model(loopy){
 			loopy.offsetY +=  (new_m2M.y - old_m2M.y);
 		}
 	});
-	// Centering & Scaling
+
+	// Centering & Scaling. Helps with cameraMode being set to follow signals.
 	self.getSignalsBounds = function(includeInstant=true){
 		let strictBounds = {};
 		let largeBounds = {};
@@ -428,7 +438,8 @@ function Model(loopy){
 		}
 		return {strict:strictBounds,large:largeBounds};
 	};
-	// Centering & Scaling
+
+	// Centering & Scaling. Help get bounds of all object for all cameraModes.
 	self.getBounds = function(visible=true){
 		// If no nodes & no labels, forget it.
 		if(self.nodes.length===0 && self.labels.length===0) return;
@@ -447,6 +458,8 @@ function Model(loopy){
 		_testObjects(self.labels);
 		return bounds;
 	};
+
+
 	self.fitBounds = function(size){
 		const bounds = self.getBounds();
 		let addX = 0;
@@ -480,21 +493,22 @@ function Model(loopy){
 		}
 	}
 
+	// Keeps the camera movement smooth during the animations for cameraModes: resize to scene and follow signals
 	self.smoothCameraMove = function(targetBounds,mustKeepInRangeBounds={},speedSetting = new SpeedSettings(),extraPadding=0){
 		const old = {offsetScale:loopy.offsetScale, offsetX:loopy.offsetX,offsetY:loopy.offsetY};
 		if(!self.olderOffset) self.olderOffset = old;
 		const fitBounds = fitToBounds();
 		/**
-		 * on tente de centrer sur le cx/cy du target
-		 * si le targetbounds n'est pas entièrement inclu dans ce cadrage, on ajoute ce qui manque en maintenant le centre.
-		 * Avec ça, on a notre cadrage idéal au quel on applique le ratio de vitesse.
+		 * on tente de centrer sur le cx/cy du target 																		| we try to center on the cx/cy of the target
+		 * si le targetbounds n'est pas entièrement inclu dans ce cadrage, on ajoute ce qui manque en maintenant le centre. | if the targetbounds is not entirely included in this frame, we add what is missing while maintaining the center.
+		 * Avec ça, on a notre cadrage idéal au quel on applique le ratio de vitesse. 										| With that, we have our ideal framing to which we apply the speed ratio.
 		 *
-		 * avec le cadrage pondéré vitesse, on regarde s'il y a un centre strict.
-		 * Si oui, on recentre et on étend au cadrage strict à partir de l'actuel, en maintenant le centre.
-		 * Si non, on étend au cadrage strict si nécessaire
-		 * //NOP enfin, on élargie le cadrage d'extraPadding (en % si entre 0 et 1, en absolu si >1)
+		 * avec le cadrage pondéré vitesse, on regarde s'il y a un centre strict. 											| with speed-weighted framing, we check if there is a strict center.
+		 * Si oui, on recentre et on étend au cadrage strict à partir de l'actuel, en maintenant le centre.					| If so, we refocus and we extend to the strict framing from the current one, maintaining the center.
+		 * Si non, on étend au cadrage strict si nécessaire 																| If not, we extend to strict framing if necessary
+		 * //NOP enfin, on élargie le cadrage d'extraPadding (en % si entre 0 et 1, en absolu si >1) 						| NOP finally, we widen the framing of extraPadding (in % if between 0 and 1, in absolute if >1)
 		 *
-		 * C'est bon, adjugé !
+		 * C'est bon, adjugé ! 																								| It's good, awarded!
 		 */
 
 		let targetOffset;
@@ -546,6 +560,8 @@ function Model(loopy){
 		loopy.offsetScale = mergedOffset.offsetScale;
 		self.olderOffset = old;
 	}
+
+	// Centers the camera bases on the bounds of the scene
 	self.center = function(andScale){
 
 		// If no nodes & no labels, forget it.
@@ -593,6 +609,8 @@ function Model(loopy){
 	};
 
 }
+
+// Helper function to get offsetScale, offsetX, offsetY of loopy and the canvas width and height to calculate the real offset.
 function offsetToRealOffset(scale,offsetX,offsetY) {
 	const canvasses = document.getElementById("canvasses");
 	const CW = canvasses.clientWidth - _PADDING - _PADDING;
@@ -612,6 +630,8 @@ function offsetToRealOffset(scale,offsetX,offsetY) {
 	}
 	return {scale,translateX,translateY};
 }
+
+// Applies the zoom transformation based on the loopy offsets and canvas size
 function applyZoomTransform(ctx){
 	// Translate to center, (translate, scale, translate) to expand to size
 	const real = offsetToRealOffset(loopy.offsetScale,loopy.offsetX,loopy.offsetY);
