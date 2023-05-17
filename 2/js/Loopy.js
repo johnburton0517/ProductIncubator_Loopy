@@ -5,21 +5,24 @@ LOOPY!
 
 **********************************/
 
+// Constants to determine if the simulation is in play or edit mode
 Loopy.MODE_EDIT = 0;
 Loopy.MODE_PLAY = 1;
 
+// Constants to determine what tool to use when in edit mode
 Loopy.TOOL_INK = 0;
 Loopy.TOOL_DRAG = 1;
 Loopy.TOOL_ERASE = 2;
 Loopy.TOOL_LABEL = 3;
+
 Loopy._CLASS_ = "Loopy"
 
 function Loopy(config){
 
+	//Initialize default properties 
 	const self = this;
 	window.loopy = self;
 	self.config = config;
-
 	injectedDefaultProps(self,objTypeToTypeIndex("loopy"));
 
 
@@ -71,7 +74,7 @@ function Loopy(config){
 	// UPDATE & DRAW //
 	///////////////////
 
-	// Update
+	// Update Mouse at 30 fps
 	self.update = function(){
 		Mouse.update();
 		if(self.wobbleControls>=0) self.wobbleControls--; // wobble
@@ -81,7 +84,7 @@ function Loopy(config){
 	};
 	setInterval(self.update, 1000/30); // 30 FPS, why not.
 
-	// Draw
+	// Draw function for modal (sidebar information) and model (screen itself)
 	self.draw = function(){
 		if(!self.modal.isShowing){ // modAl
 			self.model.draw(); // modEl
@@ -106,13 +109,15 @@ function Loopy(config){
 		// Play mode!
 		if(mode===Loopy.MODE_PLAY){
 			self.model.olderOffset = false; // Camera Reset
-			self.showPlayTutorial = true; // show once!
+			self.showPlayTutorial = true; // show once
 			if(!self.embedded) self.wobbleControls=45; // only if NOT embedded
 			self.sidebar.showPage("Edit");
 			self.playbar.showPage("Player");
 			self.sidebar.dom.setAttribute("mode","play");
 			self.toolbar.dom.setAttribute("mode","play");
 			document.getElementById("canvasses").removeAttribute("cursor"); // TODO: EVENT BASED
+
+			// Activate autoplay nodes by sending a signal to them
 			const autoplayNodes = loopy.model.nodes.filter((n)=>n.label==="autoplay"||n.label==="autostart");
 			for(let node of autoplayNodes){
 				node.takeSignal({
@@ -120,14 +125,17 @@ function Loopy(config){
 					color:node.hue
 				});
 			}
+		// Reset model if not in play mode
 		}else{
 			publish("model/reset");
 		}
 
 		// Edit mode!
 		if(mode===Loopy.MODE_EDIT){
-			self.showPlayTutorial = false; // donezo
-			self.wobbleControls = -1; // donezo
+			self.showPlayTutorial = false; // Stop showing tutorial
+			self.wobbleControls = -1; // Disable wobble controls
+
+			// configure sidebar and playbard for edit mode
 			self.sidebar.showPage("Edit");
 			self.playbar.showPage("Editor");
 			self.sidebar.dom.setAttribute("mode","edit");
@@ -143,11 +151,12 @@ function Loopy(config){
 
 	self.dirty = false;
 
-	// YOU'RE A DIRTY BOY
+	// Dirty: unsaved changes
 	subscribe("model/changed", function(){
 		if(!self.embedded) self.dirty = true;
 	});
 
+	// Export model as binary file
 	subscribe("export/file", function(){
 		const element = document.createElement('a');
 		element.setAttribute('href', 'data:application/octet-stream;base64,' + binToB64(serializeToBinary()));
@@ -160,6 +169,7 @@ function Loopy(config){
 
 		document.body.removeChild(element);
 	});
+	// Export model as json file
 	subscribe("export/json", function(){
 		const element = document.createElement('a');
 		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + serializeToHumanReadableJson());
@@ -173,6 +183,7 @@ function Loopy(config){
 		document.body.removeChild(element);
 	});
 
+	// Load/import model from a file
 	subscribe("load/file", ()=> importFileHandler(false));
 	subscribe("import/file", ()=> importFileHandler(true));
 	function importFileHandler(mergeWithCurrent){
@@ -188,6 +199,7 @@ function Loopy(config){
 		input.click();
 	}
 
+	// Create a URL for model
 	self.saveToURL = function(embed){
 
 		// Create link
@@ -213,6 +225,7 @@ function Loopy(config){
 	// const _blankData = "[[[1,403,223,1,%22something%22,4],[2,405,382,1,%22something%2520else%22,5]],[[2,1,94,-1,0],[1,2,89,1,0]],[[609,311,%22need%2520ideas%2520on%2520what%2520to%250Asimulate%253F%2520how%2520about%253A%250A%250A%25E3%2583%25BBtechnology%250A%25E3%2583%25BBenvironment%250A%25E3%2583%25BBeconomics%250A%25E3%2583%25BBbusiness%250A%25E3%2583%25BBpolitics%250A%25E3%2583%25BBculture%250A%25E3%2583%25BBpsychology%250A%250Aor%2520better%2520yet%252C%2520a%250A*combination*%2520of%250Athose%2520systems.%250Ahappy%2520modeling!%22]],2%5D";
 	const _blankData = "[[[1,403,223,1,%22something%22,4],[2,405,382,1,%22something%2520else%22,5]],[[2,1,94,-1,0],[1,2,89,1,0]],[[609,311,%22need%2520ideas%2520on%2520what%2520to%250Asimulate%253F%2520how%2520about%253A%250A%250A%25E3%2583%25BBtechnology%250A%25E3%2583%25BBenvironment%250A%25E3%2583%25BBeconomics%250A%25E3%2583%25BBbusiness%250A%25E3%2583%25BBpolitics%250A%25E3%2583%25BBculture%250A%25E3%2583%25BBpsychology%250A%250Aor%2520better%2520yet%252C%2520a%250A*combination*%2520of%250Athose%2520systems.%250Ahappy%2520modeling!%22]],2%5D";
 
+	// Create a model from a URL
 	self.loadFromURL = function(){
 		let remoteDataUrl = _getParameterByName("url");
 		if(remoteDataUrl){
@@ -237,9 +250,10 @@ function Loopy(config){
 	self.playbar = new PlayControls(self);
 	self.playbar.showPage("Editor"); // start here
 
+	// Check if embedded mode is enabled
 	if(self.embedded){
 
-		// Hide all that UI
+		// Hide UI elements
 		self.toolbar.dom.style.display = "none";
 		self.sidebar.dom.style.display = "none";
 		document.getElementById("sidebarSwitch").style.display = "none";
