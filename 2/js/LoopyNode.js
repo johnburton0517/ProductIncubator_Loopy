@@ -129,7 +129,7 @@ function LoopyNode(model, config){
 
 	// Send a signal from this node to the connected nodes
 	self.sendSignal = function(signal){
-		// do nothing if node is dead or singal 
+		// do nothing if node is dead or single 
 		if(self.died && !signal.vital) return;
 		let myEdges = self.model.getEdgesByStartNode(self);
 
@@ -207,7 +207,7 @@ function LoopyNode(model, config){
 		if(self.value>1) self.value = 1;
 	};
 
-	// Receieves a signal from another node
+	// Receives a signal from another node
 	self.takeSignal = function(signal,fromEdge=undefined){
 		// Drop signal if wrong color and color logic is enabled
 		if(loopy.colorLogic && self.foreignColor && signal.color!==self.hue) return; // drop signal
@@ -259,7 +259,7 @@ function LoopyNode(model, config){
 			self.valueBeforeAggregationPool = self.value - signal.delta/self.size;
 		}
 
-		// Propogate signal if enabled
+		// Propagate signal if enabled
 		if(loopy.colorLogic===1 && self.hue !== signal.color){
 			const newSignal = {delta:signal.delta,age:signal.age,color:signal.color,vital:signal.vital};
 			return self.sendSignal(newSignal);

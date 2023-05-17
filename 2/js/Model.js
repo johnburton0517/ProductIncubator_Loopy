@@ -170,6 +170,9 @@ function Model(loopy){
 		self.groups.push(group);
 		applyInitialPropEffects(group);
 		self.update();
+
+		console.log("Added group",group);
+
 		return group;
 	};
 
