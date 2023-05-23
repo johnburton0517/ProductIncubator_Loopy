@@ -1,3 +1,18 @@
+/***************************************************************************************************
+User Summary
+The functionality in this file sets various label properties such as location, text, and text color, 
+and is not interactive with end users.
+
+Technical Summary
+These functions define and injects various properties, such as (x,y) label location, label 
+visibility, text value and color, and ability to add a clickable URL  into Loopy labels. X and Y 
+values are defined partly by scaling your canvas size (which likely means your screen resolution) to 
+accommodate for a link being opened across multiple devices. Inputted values for this are saved in a 
+user’s cache, so opening a link to a particular project across multiple devices - and subsequently 
+multiple accounts - would result in some properties not being saved.
+
+***************************************************************************************************/
+
 //This file regards everything to do with altering labels in Loopy
 //This and the line below set x and y coordinates that scale depending on canvas size or user screensize
 injectProperty("label", "x",{persist:{index:0,binFunc:factoryRatioForXY(),serializeFunc:v=>Math.round(v)}});

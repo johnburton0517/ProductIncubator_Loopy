@@ -1,3 +1,14 @@
+/***************************************************************************************************
+User Summary
+This code provides a set of functions for injecting and manipulating properties in objects, 
+configuring their default values, and updating their representations. It is used to serialize, 
+deserialize, save, and load loopy models. 
+
+Technical Summary
+TODO
+
+***************************************************************************************************/
+
 // noinspection JSUnusedGlobalSymbols
 
 function log(bitArray) {

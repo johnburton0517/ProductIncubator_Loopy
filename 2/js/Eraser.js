@@ -1,8 +1,18 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+When the user clicks the Eraser Tool in the Toolbar on the left side of the screen or presses E on 
+the keyboard the Eraser Tool is selected. Users can interact with objects on the screen and delete 
+them with the tool. 
 
-ERASER
+Technical Summary
+The Eraser class has a function called erase that is responsible for removing certain elements from 
+the canvas. When the user is in editing mode and selects the eraser tool, the erase function is 
+triggered. It checks if the mouse is pressed or if it's a click event, and if so, it looks for 
+nodes, edges, and labels that are located at the mouse position. If any of these elements are found, 
+they are removed from the canvas. The code also includes event listeners for mouse movement and 
+mouse click, which call the erase function accordingly.
 
-**********************************/
+***************************************************************************************************/
 
 // Define the Eraser class
 function Eraser(loopy){

@@ -1,7 +1,21 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+When a user is in Edit mode and clicks the Hand icon - MO(V)E - in the toolbar or hits control + v, 
+they can enter drag/move mode. When the user clicks and drags an object, it moves around on screen.
+  *If a user clicks-and-drags during “Play” mode, the screen itself moves rather than the individual 
+objects
 
-DRAGGER
-**********************************/
+Technical Summary
+When Loopy is in MO(V)E mode, the system checks whether (a.) A user is holding click and dragging, 
+and (b.) Whether an object - being a node, label, or edge - is below coordinates of the mouse. If 
+these conditions are true, the given object will be moved along with the mousepoint until the user 
+releases the click.
+  *Labels move freely with no dependencies and drag to wherever the user drops them
+  *Nodes move freely and their connected edges stay connected and resizes
+  *The node a dragged edge connects to stays the same but the edge arc - i.e. circle radius - will 
+   resize
+
+***************************************************************************************************/
 
 /*This function lets user move on-screen objects while in Edit (MOVE) mode or move the screen
 itself around in Play mode*/

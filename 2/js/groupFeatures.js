@@ -1,4 +1,14 @@
+/***************************************************************************************************
+User Summary
+Group features allows the user to change group options such as name, visibility, and color. 
+Visibility allows the user to hide or display groups on the canvas. Groups in Loopy are still being 
+developed so group features are not available to the user.
 
+Technical Summary
+Group features calls a function to modify the group properties. The objType is “group”, and 
+propertyName can be “name”, “visibility”, or “color”.
+
+***************************************************************************************************/
 injectProperty("group", "name",{
 });
 injectProperty("group", "contentVisibility",{

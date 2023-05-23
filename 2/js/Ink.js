@@ -1,24 +1,22 @@
-/**********************************
+/***************************************************************************************************
 
-When the user clicks the Pencil Tool in the Toolbar on the left 
-side of the screen or presses N on the keyboard the Pencil tool 
-is selected. Users can connect nodes to each other by drawing a 
-line between 2 nodes or can create a new node by drawing a circle.
+User Summary:
+When the user clicks the Pencil Tool in the Toolbar on the left side of the screen or presses N on 
+the keyboard the Pencil tool is selected. Users can connect nodes to each other by drawing a line 
+between 2 nodes or can create a new node by drawing a circle.
 
-The Ink function initially creates a 2D rendering context of the 
-screen so that the user can draw and initializes an array called 
-strokeData that tracks. It has a class method called drawInk that
-draws the line that the user drew on the screen. It also contains 
-a reset function that clears the canvas and resets the strokeData 
-array. If the mouse is pressed and the program is in Ink mode, the 
-code calls the drawInk function. When the mouse is released, the 
-code either creates a new arrow if the user started and ended 
-drawing in a node or creates a new node otherwise. The program 
-then calls the reset function. There is a helper function called 
-areWeInkEditing that ensures that Loopy is in edit mode. 
+Technical Summary:
+The Ink function initially creates a 2D rendering context of the screen so that the user can draw 
+and initializes an array called strokeData that tracks. It has a class method called drawInk that 
+draws the line that the user drew on the screen. It also contains a reset function that clears the 
+canvas and resets the strokeData array. If the mouse is pressed and the program is in Ink mode, the 
+code calls the drawInk function. When the mouse is released, the code either creates a new arrow if
+the user started and ended drawing in a node or creates a new node otherwise. The program then 
+calls the reset function. There is a helper function called areWeInkEditing that ensures that Loopy
+is in edit mode. 
 
+*****************************************************************************************************/
 
-**********************************/
 
 // Set the minimum radius for ink drawing
 Ink.MINIMUM_RADIUS = LoopyNode.DEFAULT_RADIUS;

@@ -1,10 +1,18 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+The Play Controls are at the bottom of the screen and allows the user to click play to switch from 
+edit mode to play mode. Once in play mode the user can interact with two new buttons that were 
+added: Stop button exits play mode and switch to edit mode, Reset button resets the canvas to 
+default values before user interacted with the nodes. A speed slider is added below the two buttons 
+and controls the speed of the animations.
 
-PLAY CONTROLS CODE:
-- play
-- pause/reset/speed
+Technical Summary
+The PlayControls function is used to to create the elements using the PlayButton and PlaySlider 
+functions and add it to the page. The PlayButton function creates the html and styles for the
+buttons. The Playslider function creates the html and styles for the slider and uses the domSpeedImg 
+function to create the slider icons.
 
-**********************************/
+***************************************************************************************************/
 
 function PlayControls(loopy){
 

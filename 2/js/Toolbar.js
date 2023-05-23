@@ -1,8 +1,16 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+The Toolbar is on the left side of the screen. It is where the user selects the tool to use. This 
+includes Pencil, Text, Move, and Eraser.
 
-TOOLBAR CODE
+Technical Summary
+The Toolbarfunction is a constructor that creates the toolbar object and provides methods for 
+managing the toolbar and its buttons. The ToolbarButton  function creates a button element with an 
+icon and tooltip. It provides methods for selecting and deselecting the button, as well as a 
+callback function that gets invoked when the button is clicked. The Toolbar class uses this 
+ToolbarButton class to create and manage buttons in the toolbar.
 
-**********************************/
+***************************************************************************************************/
 
 function Toolbar(loopy){
 

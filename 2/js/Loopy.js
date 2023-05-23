@@ -1,9 +1,17 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+This code is the base class of the simulation upon which the rest of the code is built. It contains 
+the base functionality for edit and play modes, saving or loading a Loopy file, and displaying the 
+simulation.
 
-LOOPY!
-- with edit & play mode
+Technical Summary
+The code defines constants for the modes edit and play, as well as the tools ink, drag, erase, and 
+label. The Loopy class comprises the main portion of the file. It initializes the window, mouse, 
+model, sidebar, mode (play/edit), and the toolbar. The functions update and draw contain code for 
+the visuals. Loopy additionally contains code for running play and edit modes, saving and loading 
+files, handling model changes and importing/exporting, and dealing with embedded mode. 
 
-**********************************/
+***************************************************************************************************/
 
 // Constants to determine if the simulation is in play or edit mode
 Loopy.MODE_EDIT = 0;

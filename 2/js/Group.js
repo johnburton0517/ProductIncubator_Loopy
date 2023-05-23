@@ -1,8 +1,15 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+This file does not appear to be in use. It’s intention seems to be letting a user draw “groups” 
+around objects, including text, to classify sets of nodes and edges together.
 
-GROUP!
+Technical Summary
+This file does not appear to be in use. It’s intention seems to be letting a user draw a box around 
+a set of nodes, edges, and possibly labels, and “bounding” them together for classification. This is 
+based on tracking (x,y) coordinates around an object [or series of objects?] and defining a new 
+object-type box that the system can interact with.
 
-**********************************/
+***************************************************************************************************/
 //Makes 7 different group color options
 Group.COLORS = {
 	"-1":"#000000", // black

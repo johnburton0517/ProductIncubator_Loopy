@@ -1,3 +1,19 @@
+/***************************************************************************************************
+User Summary
+This allows users to create and manipulate nodes. The nodes have various properties that determine 
+their appearance and behavior. The properties can be adjusted by the user.
+
+Technical Summary
+This code defines various properties for the LoopyNode class. The updateNodeSize function adjusts 
+the radius of the selected node based on its size. Properties such as id, x, y, label, hue, size, 
+init, overflow, underflow, aggregationLatency, explode, foreignColor, and interactive are injected 
+into the node class. These properties control aspects like the node's position, label, color, size,
+initial fill, maximum and minimum fill, aggregation latency, explosion behavior, foreign color 
+signal handling, and interactivity options. The sideBar objects provide configuration options and 
+UI labels for each property.
+
+***************************************************************************************************/
+
 // LoopyNode features
 function updateNodeSize (self,v){
     // Adjust the radius based on the size of the selected node

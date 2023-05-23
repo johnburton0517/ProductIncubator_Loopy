@@ -1,3 +1,14 @@
+/***************************************************************************************************
+User Summary
+Helps with the persist class in serialization and de-serialization
+
+Technical Summary
+Provides functionality to manipulate and store binary data in a compressed or uncompressed form 
+using a bit-level representation.
+
+***************************************************************************************************/
+
+
 // this code provides functionality to manipulate and store binary data in a compressed or uncompressed form using a bit-level representation
 function BitArray(arrayBufferOrBitSize){
     const self = this;

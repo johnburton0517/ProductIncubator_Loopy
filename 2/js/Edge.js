@@ -1,8 +1,17 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+Edge.js is used for creating and managing connections between nodes in a graph. Edges are the 
+connection arrows between nodes. The edges pass signals from node to node.
 
-EDGE!
+Technical Summary
+The Edge class defines various properties and methods related to the edges the nodes. The COLORS 
+object defines color codes for different signal states. The allSignals array holds all signals in 
+the system, and there are constants for the maximum number of signals allowed. The constructor 
+function initializes the edge object with the provided configuration. The addSignal method adds a 
+signal to the edge based on certain conditions. The updateSignals method updates the positions and 
+behavior of the signals on the edge.
 
-**********************************/
+***************************************************************************************************/
 Edge.COLORS = {
 	"-3":"#000000", // black
 	"-1":"#666666", // grey

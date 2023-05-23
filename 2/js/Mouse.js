@@ -1,3 +1,14 @@
+/***************************************************************************************************
+User Summary
+Is tracking the user’s mouse interactions so that they can interact with the canvas.
+
+Technical Summary
+Tracks the following mouse events on the canvas: onMouseDown, onMouseUp, onMouseWheel, onMouseMove. 
+These events are published so that they can be used in other classes which allows those classes to 
+provide functionality like drawing, dragging, etc..
+
+***************************************************************************************************/
+
 window.Mouse = {}; 
 Mouse.init = function(target){ // target is the canvas 
 

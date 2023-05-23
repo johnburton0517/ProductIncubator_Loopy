@@ -1,8 +1,17 @@
-/***********************
+/***************************************************************************************************
+User Summary
+When a user clicks any of the following in the sidebar – see examples, how to, credits, save as link,
+save as file, load from file, load from url, import extra file, embed in your blog, and make a GIF of
+ your loopy design. Depending on which button is clicked a modal page will appear on the user’s 
+ screen displaying more information or a hyperlink to a new page is launched. The user can click 
+ outside of the popup window or click the X on the top right of the window to hide it.
 
-Use the same PAGE UI thing
+Technical Summary
+The modals are hidden by default. A new page is generated on click. The height and width of the page 
+is hardcoded with either the Iframe (inline frame) data and or the page data to fit accordingly. 
+The data for the pages are stored “pages” folder.
 
-************************/
+***************************************************************************************************/
 
 function Modal(loopy){
 

@@ -1,3 +1,12 @@
+/***************************************************************************************************
+User Summary
+Feature Injector provides a way to set properties for the models of edges, nodes, labels, and loopy.
+
+Technical Summary
+TODO
+
+***************************************************************************************************/
+
 // A loopy implementation of SOLID Open–closed principle
 const PERSIST_MODEL = [];
 const EDIT_MODEL = [];

@@ -1,8 +1,14 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+PageUI controls what the page is being displayed to the user.
 
-PAGE UI: to extend to Sidebar, Play Controls, Modal.
+Technical Summary
+The DOM instance is set using self. An array called “self.pages” stores the pages. The function 
+addPage() sets the DOM and id of the page instance then pushes it to the pages array. The 
+showPage(id) function loops through the pages array. It checks the “id” of the current page against 
+the “id” passed in as a parameter. Once the id’s match that page is displayed to the user.
 
-**********************************/
+***************************************************************************************************/
 
 function PageUI(dom){
 

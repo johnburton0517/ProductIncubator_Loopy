@@ -1,8 +1,18 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+The Sidebar or “Menu Bar” is on the right side of the screen. Users can Switch between Simple and 
+Advanced mode, save or load a file, and see examples of simulations. After the user selects a Node, 
+Edge, or Label they can edit the attributes in the Menu Bar.
 
-SIDEBAR CODE
+Technical Summary
+The Sidebar function manages the sidebar component and its pages, providing navigation and 
+structure. SidebarPage represents a specific page within the sidebar, handling content and user 
+interactions. Component is a generic base for creating customizable components with common 
+properties and events. ComponentInput, ComponentSlider, and ComponentButton extend Component to 
+create input, slider, and button components respectively, with specific event handling and 
+functionality.
 
-**********************************/
+***************************************************************************************************/
 
 function Sidebar(loopy){
 

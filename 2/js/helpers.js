@@ -1,9 +1,17 @@
-/*****************************
+/***************************************************************************************************
+User Summary
+This file includes several different features that set up and allow the Loopy page to run, 
+including things like buttons, labels, mouse movements, and the Loopy environment itself. While a 
+user does not directly interact with the functions in this file, these functions drive all 
+characteristics of the page that the user does interact with.
 
-A miscellaneous collection of reuseable helper methods
-that I couldn't be arsed to put into separate classes
+Technical Summary
+This file houses several different helper functions that are called on to load in the interface, 
+interactive objects, mouse functionality, etc. One function defines whether an instance is being 
+accessed on an Apple product and configures the environment accordingly. Another handles saving 
+changes to a workspace and helping them reload across separate pageloads.
 
-*****************************/
+***************************************************************************************************/
 
 Math.TAU = Math.PI*2;
 

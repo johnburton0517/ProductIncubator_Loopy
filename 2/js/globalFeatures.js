@@ -1,3 +1,16 @@
+/***************************************************************************************************
+User Summary
+This allows users to choose their preferred mode, customize color settings for aesthetic or 
+logic-based purposes, and select camera behavior.
+
+Technical Summary
+This code configures properties and features of Loopy. It defines properties for Loopy mode (simple 
+or advanced), color logic mode, camera mode, and Side Bar options. The injectProperty function is 
+used to add these properties to the Loopy object. Additionally, HTML snippets are included to 
+display information and buttons in the Side Bar.
+
+***************************************************************************************************/
+
 // Loopy global features
 /*injectProperty("loopy", "LoopyNode._UID",{
     defaultValue:0, // bool

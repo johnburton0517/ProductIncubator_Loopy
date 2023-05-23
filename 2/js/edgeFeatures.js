@@ -1,3 +1,20 @@
+/***************************************************************************************************
+User Summary
+This file sets properties for edges, such as start and end points, curvature, rotation, strength, 
+sign behavior, filtering, and signal interpretation. These properties allow customization and 
+control over the behavior and appearance of edges within a system or application.
+
+
+Technical Summary
+The injectProperty function is used to define and inject various properties into the "edge" object. 
+These properties determine the behavior, appearance, and configuration options for edges. Each 
+injectProperty call adds a specific property, such as "from," "to," "arc," "rotation," and 
+"strength,". The properties are assigned default values and can be persisted, meaning they can be 
+stored and retrieved when needed. Additionally, the code sets up sidebars with user interface 
+elements to allow users to modify and customize the properties of edges.
+
+***************************************************************************************************/
+
 // Edge features
 
 // Define a function to convert a bit to a reference

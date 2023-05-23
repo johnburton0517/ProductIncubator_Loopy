@@ -1,8 +1,18 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+The Model is the canvas that the user sees and draws on. When the nodes, edges, and labels are drawn
+they are added to the canvas for the user to interact with in edit mode or play mode. The camera 
+movement that happens in play mode is part of this class. 
 
-MODEL!
+Technical Summary
+Most of the animations that happen on the canvas happen here or are called here. It also keeps track 
+of all edges, nodes, and labels in arrays under this file. This file also imports saved models and 
+loads it to the canvas. There are many functions under this class but two important ones are 
+getEdgesByStartNode and getEdgesByEndNode both of which help show the connection between nodes. The 
+camera movements that happen after clicking play are coded under this file. Mouse events like 
+selecting a node to edit happen under this file.
 
-**********************************/
+***************************************************************************************************/
 
 function Model(loopy){
 

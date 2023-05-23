@@ -1,8 +1,23 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+This code controls the functionality of a node. It allows users to send and receive signals to other 
+nodes via connected arrows, functionality for the look of the node, and functionality for a node to 
+be killed or revived.
 
-NODE!
+Technical Summary
+The code contains values corresponding to the possible colors a node can be. The main functionality 
+is in the LoopyNode class, which starts by setting the default values of a node with the 
+injectedDefaultProps and initFillRateOrDead functions.  The function readOnlyRules determines the 
+node can be interacted with. The function isBottomArrrow checks if an edge can send negative 
+signals. The code contains functionality to determine if the interactive arrows are visible. If the 
+mouse is pressed down on  a control, the edges send their corresponding signals. The function 
+sendSignal contains code to send a signal with the appropriate color, sign, vitality, and threshold, 
+with additional code for handling quantitative signals. The function takeSignal contains code to 
+receive a positive or negative signal from another node, and explode if enabled the node’s value 
+becomes <0 or >1, as well as code to handle color logic and delayed aggregation. The code also 
+contains a segment for drawing the nodes, killing the node, and some helper functions.
 
-**********************************/
+***************************************************************************************************/
 
 // Define colors for nodes
 LoopyNode.COLORS = {

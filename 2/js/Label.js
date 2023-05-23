@@ -1,8 +1,21 @@
-/**********************************
+/***************************************************************************************************
+User Summary
+When the user clicks the Text Tool in the Toolbar on the left side of the screen or presses T on the 
+keyboard the Text Tool is selected. Users can click anywhere on the screen to create a new text 
+field. If there is already an object where the user clicks, it will select that object. The menu of 
+the right of the screen will also open with an editable text field that corresponds to the field on 
+the screen. From the menu the text field can be deleted with the Delete Node Button.
 
-LABEL!
+Technical Summary
+The Label class represents a label . The class has properties such as x and y coordinates, text 
+content, color, and visibility. It provides methods for drawing the label, handling mouse clicks, 
+and calculating the label's bounding box. The breakText method breaks the label's text into lines 
+and adds special characters based on the label's properties. The getBounds method calculates the 
+dimensions of the label's bounding box based on its text content. The isPointInLabel method checks 
+if a given point is inside the label's bounding box. The kill method removes the label from the 
+parent model and triggers the "kill" event.
 
-**********************************/
+***************************************************************************************************/
 Label.COLORS = {
 	"-1":"#000000", // black
 	0: "#880000", // red
