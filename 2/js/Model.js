@@ -1,4 +1,4 @@
-/** *************************************************************************************************
+/** ************************************************************************************************
 User Summary
 The Model is the canvas that the user sees and draws on. When the nodes, edges, and labels are drawn
 they are added to the canvas for the user to interact with in edit mode or play mode. The camera
@@ -12,7 +12,7 @@ getEdgesByStartNode and getEdgesByEndNode both of which help show the connection
 camera movements that happen after clicking play are coded under this file. Mouse events like
 selecting a node to edit happen under this file.
 
-************************************************************************************************** */
+************************************************************************************************* */
 
 function Model(loopy) {
     const self = this;

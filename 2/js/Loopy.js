@@ -1,4 +1,4 @@
-/** *************************************************************************************************
+/** ************************************************************************************************
 User Summary
 This code is the base class of the simulation upon which the rest of the code is built. It contains
 the base functionality for edit and play modes, saving or loading a Loopy file, and displaying the
@@ -11,21 +11,21 @@ model, sidebar, mode (play/edit), and the toolbar. The functions update and draw
 the visuals. Loopy additionally contains code for running play and edit modes, saving and loading
 files, handling model changes and importing/exporting, and dealing with embedded mode.
 
-************************************************************************************************** */
-
-// Constants to determine if the simulation is in play or edit mode
-Loopy.MODE_EDIT = 0;
-Loopy.MODE_PLAY = 1;
-
-// Constants to determine what tool to use when in edit mode
-Loopy.TOOL_INK = 0;
-Loopy.TOOL_DRAG = 1;
-Loopy.TOOL_ERASE = 2;
-Loopy.TOOL_LABEL = 3;
-
-Loopy._CLASS_ = 'Loopy';
+************************************************************************************************* */
 
 function Loopy(config) {
+    // Constants to determine if the simulation is in play or edit mode
+    Loopy.MODE_EDIT = 0;
+    Loopy.MODE_PLAY = 1;
+
+    // Constants to determine what tool to use when in edit mode
+    Loopy.TOOL_INK = 0;
+    Loopy.TOOL_DRAG = 1;
+    Loopy.TOOL_ERASE = 2;
+    Loopy.TOOL_LABEL = 3;
+
+    Loopy._CLASS_ = 'Loopy';
+
     // Initialize default properties
     const self = this;
     window.loopy = self;
@@ -83,7 +83,7 @@ function Loopy(config) {
     // Update Mouse at 30 fps
     self.update = function () {
         Mouse.update();
-        if (self.wobbleControls >= 0) self.wobbleControls--; // wobble
+        if (self.wobbleControls >= 0) self.wobbleControls -= 1; // wobble
         if (!self.modal.isShowing) { // modAl
             self.model.update(); // modEl
         }
@@ -188,8 +188,6 @@ function Loopy(config) {
     });
 
     // Load/import model from a file
-    subscribe('load/file', () => importFileHandler(false));
-    subscribe('import/file', () => importFileHandler(true));
     function importFileHandler(mergeWithCurrent) {
         const input = document.createElement('input');
         input.type = 'file';
@@ -202,6 +200,9 @@ function Loopy(config) {
         };
         input.click();
     }
+
+    subscribe('load/file', () => importFileHandler(false));
+    subscribe('import/file', () => importFileHandler(true));
 
     // Create a URL for model
     self.saveToURL = function (embed) {
@@ -217,7 +218,7 @@ function Loopy(config) {
         try {
             window.history.replaceState(null, null, historyLink);
         } catch (e) {
-            location.hash = uri;
+            window.location.hash = uri;
             historyLink = `${base}#${uri}`;
         }
 
@@ -235,8 +236,8 @@ function Loopy(config) {
             fetch(remoteDataUrl).then((r) => r.arrayBuffer()).then((aB) => loopy.model.importModel(deserializeFromArrayBuffer(aB)));
         } else {
             let data = _getParameterByName('data');
-            if (!data) data = location.href.split('?')[1];
-            if (!data) data = location.href.split('#')[1];
+            if (!data) data = window.location.href.split('?')[1];
+            if (!data) data = window.location.href.split('#')[1];
             if (!data) data = decodeURIComponent(_blankData);
             loopy.model.importModel(deserializeFromUrl(data));
         }
